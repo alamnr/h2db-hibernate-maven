@@ -23,17 +23,13 @@ public class HibernateUtil {
 			// https://stackoverflow.com/a/48434528/4412389 
 				//  for hibernate.cfg.xml in hibernate-core-5.4.29.Final.jar  
 			
-			/*
-			 * serviceRegistry = new StandardServiceRegistryBuilder()
-			 * .configure("hibernate.cfg.xml") .build();
-			 * 
-			 * return new Configuration().buildSessionFactory( serviceRegistry );
-			 */
+			 serviceRegistry = new StandardServiceRegistryBuilder().configure("hibernate.cfg.xml") .build();
+			 return new Configuration().buildSessionFactory( serviceRegistry );
+			 
 			
 			// For hibernate.ptoperties  file
 			
-			return new Configuration().addAnnotatedClass(User.class).buildSessionFactory(new StandardServiceRegistryBuilder()
-			 .build());
+			//return new Configuration().addAnnotatedClass(User.class).buildSessionFactory(new StandardServiceRegistryBuilder().build());
 			
 			
 		} catch (Exception e) {

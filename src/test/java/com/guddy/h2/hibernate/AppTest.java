@@ -56,10 +56,19 @@ public class AppTest
     	
     	Session session = HibernateUtil.getSessionFactory().openSession();
     	session.beginTransaction();
-    	User user = new User(null,"Modan","Chodan",new Date(),"mc@chu.cu",new Date(),"gagan",new Date(),"jumal");
+    	User user = new User(null,"Modan","Chodan",null,"mc@chu.cu",new Date(),"gagan",new Date(),"jumal");
     	session.save(user);
     	session.getTransaction().commit();
+    	
+    	session.beginTransaction();
+    	User dbUser = session.get(User.class, user.getUserId());
+    	user.setFirstName("Jamila");
+    	session.update(user);
+    	session.getTransaction().commit();
+    	
     	session.close();
+    	
+    	
     	
     	assertNotNull(user.getUserId());
     }

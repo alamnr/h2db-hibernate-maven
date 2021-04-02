@@ -2,6 +2,7 @@ package com.infiniteskills.data.entities;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,6 +26,7 @@ public class User {
 	
 	private String lastName;
 	
+	@Column(nullable = false)
 	private Date birthDate;
 	
 	private String emailAddress;
@@ -33,8 +35,10 @@ public class User {
 	
 	private String lastUpdatedBy;
 	
+	@Column(updatable =false)
 	private Date createdDate;
 	
+	@Column(updatable =false)
 	private String createdBy;
 
 }
