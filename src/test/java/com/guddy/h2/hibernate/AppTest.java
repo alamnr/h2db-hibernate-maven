@@ -4,7 +4,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 
 import javax.transaction.SystemException;
@@ -14,6 +17,7 @@ import org.junit.Test;
 
 import com.infiniteskills.data.HibernateUtil;
 import com.infiniteskills.data.entities.Address;
+import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.User;
 
 
@@ -46,6 +50,41 @@ public class AppTest
     }
     
     @Test
+    public void testBankPersistence() {
+		 
+		Bank bank = null;
+		Address address;
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		try {
+			session.beginTransaction();
+			address =  new Address("addressline1", "addressline2", "California", "Ohio", "1234");
+			Collection<String> collect = new ArrayList<>();
+	        collect.add("A");
+	        collect.add("Computer");
+	        collect.add("Portal");
+	        collect.add("for");
+	        collect.add("Geeks");
+			bank = new Bank(null, "Shaoa Bank", address, false, new Date(), "chodna", new Date(), "madna",
+					collect);
+			session.save(bank);
+			session.getTransaction().commit();
+			
+			
+		
+			
+		}catch (Exception e) {
+			session.beginTransaction().rollback();
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		} finally {
+			session.close();
+			HibernateUtil.getSessionFactory().close();
+		}	
+		
+		assertNotNull(bank.getBankId());
+	}
+    
+    @Test
     public void  testUserPersistence()
     {
     	
@@ -70,8 +109,9 @@ public class AppTest
 			assertNotNull(user.getUserId());
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			session.beginTransaction().rollback();
 			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
 			session.close();
 			HibernateUtil.getSessionFactory().close();
