@@ -8,8 +8,11 @@
       
       <property name ="connection.driver_class">org.h2.Driver</property>     
       
-       <property name = "connection.url">jdbc:h2:mem:test</property> 
+       <!-- <property name = "connection.url">jdbc:h2:mem:test</property>  -->
       <!-- <property name ="connection.url">jdbc:h2:~/h23/test</property> -->
+      <!--  db lock problem by passing -->
+      <property name ="connection.url">jdbc:h2:tcp://localhost/C:\Users\DELL\h23\test</property>
+      
       
       <property name ="connection.username">sa</property>
       
@@ -25,7 +28,7 @@
       
       <property name="format_sql">true</property>
       
-      <property name="hbm2ddl.auto">update</property>
+      <property name="hbm2ddl.auto">create</property>
       
 
       <mapping class ="com.infiniteskills.data.entities.User"/>

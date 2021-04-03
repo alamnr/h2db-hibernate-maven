@@ -1,24 +1,19 @@
 package com.guddy.h2.hibernate;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.sql.Connection;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 import javax.transaction.SystemException;
-import javax.transaction.Transaction;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.junit.Test;
 
 import com.infiniteskills.data.HibernateUtil;
-
+import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.User;
 
 
@@ -55,25 +50,44 @@ public class AppTest
     {
     	
     	Session session = HibernateUtil.getSessionFactory().openSession();
-    	session.beginTransaction();
-    	User user = new User(null,"Modan","Chodan",null,"mc@chu.cu",new Date(),"gagan",new Date(),"jumal");
-    	session.save(user);
-    	session.getTransaction().commit();
+    	User user;
+    	Address address;
+		try {
+			session.beginTransaction();
+			address = new Address("addressline1", "addressline2", "California", "Ohio", "1234");
+			user = new User(null,"Modan","Chodan",getMyBirthDay(),"mc@chu.cu",new Date(),"gagan",new Date(),"jumal",true,0,address);
+			session.save(user);
+			session.getTransaction().commit();
+			
+			/*
+			 * session.beginTransaction(); User dbUser = session.get(User.class,
+			 * user.getUserId()); user.setFirstName("Jamila"); session.update(user);
+			 * session.getTransaction().commit();
+			 */
+			
+			session.refresh(user);
+			System.out.println(user.getAge());
+			assertNotNull(user.getUserId());
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			session.close();
+			HibernateUtil.getSessionFactory().close();
+		}
     	
-    	session.beginTransaction();
-    	User dbUser = session.get(User.class, user.getUserId());
-    	user.setFirstName("Jamila");
-    	session.update(user);
-    	session.getTransaction().commit();
-    	
-    	session.close();
-    	
-    	
-    	
-    	assertNotNull(user.getUserId());
     }
     
-    @Test
+    private Date getMyBirthDay() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.YEAR, 1982);
+		calendar.set(Calendar.MONTH, 11);
+		calendar.set(Calendar.DATE, 1);
+		return calendar.getTime();
+	}
+
+	@Test
     public void persistAccountType() throws IllegalStateException, SystemException {
     	
 		/*
