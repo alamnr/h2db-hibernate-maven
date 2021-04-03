@@ -9,7 +9,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.SystemException;
 
@@ -59,14 +61,18 @@ public class AppTest
 		try {
 			session.beginTransaction();
 			address =  new Address("addressline1", "addressline2", "California", "Ohio", "1234");
-			List<String> collect = new ArrayList<>();
-	        collect.add("A");
-	        collect.add("Computer");
-	        collect.add("Portal");
-	        collect.add("for");
-	        collect.add("Geeks");
+			/*
+			 * List<String> collect = new ArrayList<>(); collect.add("A");
+			 * collect.add("Computer"); collect.add("Portal"); collect.add("for");
+			 * collect.add("Geeks");
+			 */
+			
+			  Map<String,String> mapValueType = new HashMap<>();
+			  mapValueType.put("Manager", "Jagan"); mapValueType.put("Neta", "Samvu");
+			 
+			
 			bank = new Bank(null, "Shaoa Bank", address, false, new Date(), "chodna", new Date(), "madna",
-					collect);
+					mapValueType);
 			session.save(bank);
 			session.getTransaction().commit();
 			
@@ -95,7 +101,12 @@ public class AppTest
 		try {
 			session.beginTransaction();
 			address = new Address("addressline1", "addressline2", "California", "Ohio", "1234");
-			user = new User(null,"Modan","Chodan",getMyBirthDay(),"mc@chu.cu",new Date(),"gagan",new Date(),"jumal",true,0,address);
+			List<Address> addresses = new ArrayList<>();
+			Address address1 =new Address("addressline3", "addressline4", "Utah", "UT", "6789");
+			addresses.add(address1);
+			addresses.add(address);
+			user = new User(null,"Modan","Chodan",getMyBirthDay(),"mc@chu.cu",new Date(),"gagan",new Date(),
+							"jumal",true,0,addresses);
 			session.save(user);
 			session.getTransaction().commit();
 			

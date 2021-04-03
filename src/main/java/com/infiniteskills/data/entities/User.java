@@ -1,10 +1,13 @@
 package com.infiniteskills.data.entities;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,9 +57,22 @@ public class User {
 	//@Formula("lower(datediff(curdate(),birth_date)/365)")
 	private int age;
 	
-	@Embedded
-	@AttributeOverrides({@AttributeOverride(name = "addressLine1", column = @Column(name="user_addressLine1"))})
-	private Address address ;
+	/*
+	 * @Embedded
+	 * 
+	 * @AttributeOverrides({@AttributeOverride(name = "addressLine1", column
+	 * = @Column(name="user_addressLine1"))}) private Address address ;
+	 */
+	
+	@ElementCollection
+	
+	private List<Address> addresses = new ArrayList<>();
+	
+	
+	
+	
+	
+	
 	
 	
 	
