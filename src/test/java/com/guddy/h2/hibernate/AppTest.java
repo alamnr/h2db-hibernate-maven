@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.transaction.SystemException;
 
@@ -58,7 +59,7 @@ public class AppTest
 		try {
 			session.beginTransaction();
 			address =  new Address("addressline1", "addressline2", "California", "Ohio", "1234");
-			Collection<String> collect = new ArrayList<>();
+			List<String> collect = new ArrayList<>();
 	        collect.add("A");
 	        collect.add("Computer");
 	        collect.add("Portal");
