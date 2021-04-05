@@ -2,7 +2,9 @@ package com.infiniteskills.data.entities;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -15,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.TableGenerator;
 import javax.persistence.Transient;
@@ -23,11 +26,13 @@ import org.hibernate.annotations.Formula;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode
 @Entity
 public class User {
 	
@@ -76,12 +81,9 @@ public class User {
 	@JoinColumn(name = "credential_id")
 	private  Credential credential;
 	
-	
-	
-	
-	
-	
-	
+	@EqualsAndHashCode.Exclude
+	@ManyToMany(cascade = CascadeType.ALL, mappedBy = "users")
+	private Set<Account> accounts = new HashSet<>();	
 	
 	
 

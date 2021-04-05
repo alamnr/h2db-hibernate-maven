@@ -20,12 +20,15 @@ import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode
 @Entity
 public class Account {
 	
@@ -40,6 +43,7 @@ public class Account {
 	@ManyToOne
 	@JoinColumn(name = "account_type_id")
 	private AccountType accountType;
+	
 	
 	@OneToMany(mappedBy = "account")
 	//@OneToMany(cascade = CascadeType.ALL)

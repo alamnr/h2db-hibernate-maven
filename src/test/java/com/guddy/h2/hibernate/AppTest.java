@@ -7,11 +7,13 @@ import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -116,12 +118,11 @@ public class AppTest
 			credential = new Credential();
 			credential.setUserName("chodna");
 			credential.setPassword("madna");
-			user = new User(null,"Modan","Chodan",getMyBirthDay(),"mc@chu.cu",new Date(),"gagan",new Date(),
-							"jumal",true,0,addresses,credential);
+			user = createUser("Ganesh", "Thappa", "ganesh@gmail.com");
 			credential.setUser(user);
 			
-			session.save(user);
-			//session.save(credential);
+			//session.save(user);
+			session.save(credential);
 			session.getTransaction().commit();
 			
 			/*
@@ -132,10 +133,10 @@ public class AppTest
 			
 			//session.refresh(user);
 			
-			 Credential credential1 = session.get(Credential.class, credential.getCredentialId());
+			 Credential dbCredential = session.get(Credential.class, credential.getCredentialId());
 		
-			System.out.println(credential1.getPassword());
-			System.out.println(credential1.getUser().getEmailAddress());
+			System.out.println(dbCredential.getPassword());
+			System.out.println(dbCredential.getUser().getEmailAddress());
 			assertNotNull(credential.getCredentialId());
 			
 		} catch (Exception e) {
@@ -216,8 +217,17 @@ public class AppTest
     
     private User createUser(String fname,String lname,String email ) {
     	User user = new User();
-    	user = new User(null,fname,lname,getMyBirthDay(),email,new Date(),"gagan",new Date(),
-				"jumal",true,0,null,null);
+    	user.setFirstName(fname);
+    	user.setLastName(lname);
+    	user.setBirthDate(getMyBirthDay());
+    	user.setEmailAddress(email);
+    	user.setCreatedDate(new Date());
+    	user.setCreatedBy("gagan");
+    	user.setLastUpdatedDate(new Date());
+    	user.setLastUpdatedBy("jumal");
+    	user.setValid(true);
+    	user.setAge(35);
+    	
     	return user;
     }
 	@Test
@@ -290,24 +300,59 @@ public class AppTest
 		Account account2 = createNewAccount("fixed Deposit Account");
 		User user1 = createUser("Modan","Chohan","modan@gmail.com");
 		User user2 = createUser("Dabi","Khabir","dabir@gmail.com");
+		//account1.setUsers(new HashSet<User>(Arrays.asList(user1,user2)));
+		//account2.setUsers(new HashSet<User>(Arrays.asList(user1,user2)));
 		account1.getUsers().add(user1);
 		account1.getUsers().add(user2);
+		user1.getAccounts().add(account1);
+		user2.getAccounts().add(account1);
+		//user1.setAccounts(new HashSet<Account>(Arrays.asList(account1,account2)));
+		//user2.setAccounts(new HashSet<Account>(Arrays.asList(account1,account2)));
+		
 		
 		account2.getUsers().add(user1);
 		account2.getUsers().add(user2);
+		user1.getAccounts().add(account2);
+		user2.getAccounts().add(account2);
 		
 		
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
-			session.save(account1);
-			session.save(account2);
+			//session.save(account1);
+			//session.save(account2);
+			
+			session.save(user1);
+			session.save(user2);
+			
 			session.getTransaction().commit();
 			
-			Account dbAccount = session.get(Account.class, account1.getAccountId());
-			assertEquals(2, dbAccount.getUsers().size());
+			//Account dbAccount = session.get(Account.class, account1.getAccountId());
+			//assertEquals(2, dbAccount.getUsers().size());
+			
+			List<Account> accounts = session.createQuery("from Account").list();
+			assertNotNull(accounts);
+			
+			
+			
+			for(Account account: accounts) {
+				assertNotNull(account.getUsers().size());
+				System.out.println(account.getUsers().size());
+			}
+			
+			List<User> users = session.createQuery("from User").list();
+			assertNotNull(users);
+			
+			
+			
+			for(User user: users) {
+				assertNotNull(user.getAccounts().size());
+				System.out.println(user.getAccounts().size());
+			}
+			
 		} catch (HibernateException e) {
 			session.getTransaction().rollback();
+			e.printStackTrace();
 			throw new RuntimeException(e);
 		} finally {
 			if(session!=null)
