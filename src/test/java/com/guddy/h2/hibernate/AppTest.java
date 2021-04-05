@@ -160,7 +160,7 @@ public class AppTest
     @Test
     public void testOwningEntityCascadeOperation() {
     	Session session = null; 
-    	User user = createUser();
+    	User user = createUser("Modan","Chohan","modan@gmail.com");
     	Credential credential = new Credential();
     	
     	credential.setPassword("password");
@@ -214,9 +214,9 @@ public class AppTest
     	
     }
     
-    private User createUser() {
+    private User createUser(String fname,String lname,String email ) {
     	User user = new User();
-    	user = new User(null,"Modan","Chodan",getMyBirthDay(),"mc@chu.cu",new Date(),"gagan",new Date(),
+    	user = new User(null,fname,lname,getMyBirthDay(),email,new Date(),"gagan",new Date(),
 				"jumal",true,0,null,null);
     	return user;
     }
@@ -255,19 +255,23 @@ public class AppTest
 	public void persistAcountAndTransaction() {
 		
 		Session session=null;
-		Account account = createNewAccount();
+		String accountName = "Savings Account";
+		Account account = createNewAccount(accountName);
 		
 		try {
 			session = HibernateUtil.getSessionFactory().openSession();
 			session.beginTransaction();
 			account.getTransactions().add(createNewBeltPurchase(account));
 			account.getTransactions().add(createNewShoePurchase(account));
-			session.save(account);
+			//session.save(account);
+			session.save(account.getTransactions().get(0));
+			session.save(account.getTransactions().get(1));
 			session.getTransaction().commit();
 			
 			Transaction transaction = session.get(Transaction.class, account.getTransactions().get(0).getTransactionId());
 			
 			System.out.println(transaction.getAccount().getAccountName());
+			assertEquals(accountName, transaction.getAccount().getAccountName());
 		} catch (HibernateException e) {
 			session.getTransaction().rollback();
 			throw new RuntimeException(e);
@@ -279,9 +283,43 @@ public class AppTest
 	}
 	
 	@Test
+	public void testAccountAndUserPersistence() {
+		
+		Session session = null;
+		Account account1 = createNewAccount("Current Account");
+		Account account2 = createNewAccount("fixed Deposit Account");
+		User user1 = createUser("Modan","Chohan","modan@gmail.com");
+		User user2 = createUser("Dabi","Khabir","dabir@gmail.com");
+		account1.getUsers().add(user1);
+		account1.getUsers().add(user2);
+		
+		account2.getUsers().add(user1);
+		account2.getUsers().add(user2);
+		
+		
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+			session.save(account1);
+			session.save(account2);
+			session.getTransaction().commit();
+			
+			Account dbAccount = session.get(Account.class, account1.getAccountId());
+			assertEquals(2, dbAccount.getUsers().size());
+		} catch (HibernateException e) {
+			session.getTransaction().rollback();
+			throw new RuntimeException(e);
+		} finally {
+			if(session!=null)
+				session.close();
+		}
+		
+	}
+	
+	@Test
 	public void testBudgetPersistentJoinTableOperation() {
 		Session session = null;
-		Account account = createNewAccount();
+		Account account = createNewAccount("Savings Account");
 		Budget budget = new Budget();
 		budget.setGoalAmount(new BigDecimal(1000));
 		budget.setName("Emergency Fund");
@@ -342,10 +380,10 @@ public class AppTest
 		return transaction;	
 	}
 	
-	private Account createNewAccount() {
+	private Account createNewAccount(String name) {
 		
 		Account account = new Account();
-		account.setAccountName("Savings Account");
+		account.setAccountName(name);
 		account.setCeatedDate(new Date());
 		account.setCloseDate(new Date());
 		account.setCreatedBy("Hori");
