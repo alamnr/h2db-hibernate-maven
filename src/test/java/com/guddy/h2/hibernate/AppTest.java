@@ -25,6 +25,7 @@ import com.infiniteskills.data.HibernateUtil;
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
+import com.infiniteskills.data.entities.Budget;
 import com.infiniteskills.data.entities.Credential;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.User;
@@ -277,6 +278,34 @@ public class AppTest
 		
 	}
 	
+	@Test
+	public void testBudgetPersistentJoinTableOperation() {
+		Session session = null;
+		Account account = createNewAccount();
+		Budget budget = new Budget();
+		budget.setGoalAmount(new BigDecimal(1000));
+		budget.setName("Emergency Fund");
+		budget.setPeriod("Yearly");
+		budget.getTransactions().add(createNewBeltPurchase(account));
+		budget.getTransactions().add(createNewShoePurchase(account));
+		
+		try {
+			session = HibernateUtil.getSessionFactory().openSession();
+			session.beginTransaction();
+			
+			session.save(budget);
+			
+			session.getTransaction().commit();
+			
+			assertNotNull(budget.getBudgetId());
+		} catch (HibernateException e) {
+			session.getTransaction().commit();
+			throw new RuntimeException(e);
+		} finally {
+			if(session != null)
+				session.close();
+		}
+	}
 	
 	private Transaction createNewBeltPurchase(Account account) {
 		

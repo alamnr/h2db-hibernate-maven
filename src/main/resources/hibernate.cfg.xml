@@ -37,6 +37,7 @@
       <mapping class="com.infiniteskills.data.entities.Account"/>
       <mapping class="com.infiniteskills.data.entities.Transaction"/>
       <mapping class="com.infiniteskills.data.entities.AccountType"/>
+      <mapping class="com.infiniteskills.data.entities.Budget"/>
       
       
    </session-factory>

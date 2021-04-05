@@ -37,7 +37,7 @@ public class Account {
 	@JoinColumn(name = "account_type_id")
 	private AccountType accountType;
 	
-	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "account")
 	//@OneToMany(cascade = CascadeType.ALL)
 	//@JoinColumn(name = "account_id" , nullable = false)
 	private List<Transaction> transactions= new ArrayList<>();
