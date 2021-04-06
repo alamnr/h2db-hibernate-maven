@@ -1,7 +1,11 @@
 package com.guddy.h2.jpa;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -13,8 +17,11 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.infiniteskills.data.entities.Account;
+import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
+import com.infiniteskills.data.entities.Currency;
 import com.infiniteskills.data.entities.Transaction;
+import com.infiniteskills.data.entities.Ids.CurrencyId;
 
 public class JpaTest {
 	
@@ -64,6 +71,34 @@ public class JpaTest {
 			em.close();
 		}
 		 
+	 }
+	 
+	 @Test
+	 public void testcompoundPrimaryKeyMapping() {
+		 
+		 EntityManager em = emf.createEntityManager();
+		 
+		 try {
+			em.getTransaction().begin();
+			 Currency currency = new Currency();
+			 currency.setCountryName("USA");
+			 currency.setName("Dollar");
+			 currency.setSymbol("$");
+			 em.persist(currency);		 
+			 em.getTransaction().commit();
+			 
+			 em.getTransaction().begin();
+			 Currency dbCurrency = em.find(Currency.class, new CurrencyId("Dollar","USA"));
+			 System.out.println(dbCurrency.getName());
+			 assertEquals("Dollar", dbCurrency.getName());
+			 em.getTransaction().commit();
+			 
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw e;
+		} finally {
+			em.close();
+		}
 	 }
 	 
 	 private Transaction createNewBeltPurchase(Account account) {
@@ -126,7 +161,17 @@ public class JpaTest {
 			bank.setLastUpdatedDate(new Date());
 			bank.setName("Bank-"+i);
 			bank.setUpdatedBy("updater-"+i);
+			Map<String,String> mapValueType = new HashMap<>();
+			mapValueType.put("Manager", "Jagan"); mapValueType.put("Neta", "Samvu");
+			bank.setContacts(mapValueType);
+			bank.setAddress(createAddress(i));
+			  
 			return bank;
+		}
+		
+		private static Address createAddress(int i) {
+			return  new Address("addressline1-"+i, "addressline2-"+i, "City-"+i, "State-"+i, "zipcode-"+i);
+
 		}
 
 
