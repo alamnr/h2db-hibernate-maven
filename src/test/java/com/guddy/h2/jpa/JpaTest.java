@@ -3,6 +3,8 @@ package com.guddy.h2.jpa;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,8 +21,10 @@ import org.junit.Test;
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
+import com.infiniteskills.data.entities.Bond;
 import com.infiniteskills.data.entities.Currency;
 import com.infiniteskills.data.entities.Market;
+import com.infiniteskills.data.entities.Stock;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.Ids.CurrencyId;
 
@@ -132,6 +136,27 @@ public class JpaTest {
 		}
 	 }
 	 
+	 @Test
+	 public void testMappedSuperClass() throws ParseException {
+		 EntityManager em = emf.createEntityManager();
+		 
+		 try {
+			em.getTransaction().begin();
+			 Stock stock = createStock();
+			 Bond bond = createBond();
+			 
+			 em.persist(bond);
+			 em.persist(stock);
+			 em.getTransaction().commit();
+		} catch (ParseException e) {
+			em.getTransaction().rollback();
+			throw e;
+		} finally {
+			em.close();
+		}
+		 
+	 }
+	 
 	 private Transaction createNewBeltPurchase(Account account) {
 			
 			Transaction transaction = new Transaction();
@@ -203,6 +228,28 @@ public class JpaTest {
 		private static Address createAddress(int i) {
 			return  new Address("addressline1-"+i, "addressline2-"+i, "City-"+i, "State-"+i, "zipcode-"+i);
 
+		}
+		
+		private static Stock createStock() {
+			
+			Stock stock = new Stock();
+			stock.setQuantity(50);
+			stock.setSharePrice(new BigDecimal(95.0));
+			stock.setIssuer("JP Morgan Chase");
+			stock.setName("GP");
+			stock.setPurchaseDate(new Date());
+			return stock;
+		}
+
+		private static Bond createBond() throws ParseException {
+			Bond bond = new  Bond();
+			bond.setInterestRate(new BigDecimal(0.9));
+			bond.setIssuer("PROB");
+			bond.setMaturityDate(new SimpleDateFormat("dd-M-yyyy").parse("22-04-2030"));
+			bond.setPurchaseDate(new Date());
+			bond.setName("Sanchay");
+			bond.setValue(new BigDecimal(300000));
+			return bond;
 		}
 
 
