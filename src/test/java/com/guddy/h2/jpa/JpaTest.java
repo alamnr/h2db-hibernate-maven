@@ -20,6 +20,7 @@ import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Currency;
+import com.infiniteskills.data.entities.Market;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.Ids.CurrencyId;
 
@@ -93,6 +94,36 @@ public class JpaTest {
 			 assertEquals("Dollar", dbCurrency.getName());
 			 em.getTransaction().commit();
 			 
+		} catch (Exception e) {
+			em.getTransaction().rollback();
+			throw e;
+		} finally {
+			em.close();
+		}
+	 }
+	 
+	 @Test
+	 public void testCompoundJoinColumn() {
+		 EntityManager em = emf.createEntityManager();
+		 
+		 try {
+			em.getTransaction().begin();
+			 Currency currency = new Currency();
+			 currency.setCountryName("England");
+			 currency.setName("Pound");
+			 currency.setSymbol("$");
+			 
+			 Market market = new Market();
+			 market.setMarketName("Share Market");
+			 market.setCurrency(currency);
+			 em.persist(market);
+			 
+			 Market dbMarket = em.find(Market.class, market.getMarketId());
+			 System.out.println(market.getCurrency().getName());
+			 
+			 em.getTransaction().commit();
+			 
+		
 		} catch (Exception e) {
 			em.getTransaction().rollback();
 			throw e;
