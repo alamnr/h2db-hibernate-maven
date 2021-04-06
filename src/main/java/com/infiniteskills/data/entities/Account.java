@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,8 +42,7 @@ public class Account {
 	@JoinColumn(name = "bank_id")
 	private Bank bank;
 	
-	@ManyToOne
-	@JoinColumn(name = "account_type_id")
+	@Enumerated(EnumType.STRING)
 	private AccountType accountType;
 	
 	

@@ -29,6 +29,7 @@ import org.junit.Test;
 
 import com.infiniteskills.data.HibernateUtil;
 import com.infiniteskills.data.entities.Account;
+import com.infiniteskills.data.entities.AccountType;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Budget;
@@ -261,6 +262,7 @@ public class AppTest
 			session.beginTransaction();
 			account.getTransactions().add(createNewBeltPurchase(account));
 			account.getTransactions().add(createNewShoePurchase(account));
+			
 			//session.save(account);
 			session.save(account.getTransactions().get(0));
 			session.save(account.getTransactions().get(1));
@@ -490,6 +492,7 @@ public class AppTest
 		account.setLastUpdateDate(new Date());
 		account.setLastUpdatedBy("Rani");
 		account.setOpenDate(new Date());
+		account.setAccountType(AccountType.SAVINGS);
 		return account;	
 		
 	}
