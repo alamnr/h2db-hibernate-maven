@@ -209,7 +209,6 @@ public class JpaTest {
 		 EntityManager em = emf.createEntityManager();
 		 
 		 try {
-			 
 			 em.getTransaction().begin();
 			 
 			 Portfolio portfolio = new Portfolio();

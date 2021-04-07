@@ -28,6 +28,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.infiniteskills.data.HibernateUtil;
+import com.infiniteskills.data.dao.UserHibernateDao;
+import com.infiniteskills.data.dao.interfaces.UserDao;
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.AccountType;
 import com.infiniteskills.data.entities.Address;
@@ -232,6 +234,26 @@ public class AppTest
     	
     	
     }
+    
+    @Test
+	 public void testPersistenceLayerDAO() {
+		 Session session = HibernateUtil.getSessionFactory().openSession();
+		 UserDao userDao = new UserHibernateDao();
+		 userDao.setSession(session);
+		 
+		 try {
+			session.beginTransaction();
+			 User user = createUser("Chudna", "Hugur", "chudna@hugur.com");
+			 userDao.save(user);
+			 session.getTransaction().commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
+		 
+	 }
     
     private User createUser(String fname,String lname,String email ) {
     	User user = new User();
