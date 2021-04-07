@@ -2,6 +2,8 @@ package com.infiniteskills.data.dao.interfaces;
 
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
 import org.hibernate.Session;
 
 public interface Dao<T,ID> {
@@ -19,4 +21,6 @@ public interface Dao<T,ID> {
 	public void clear();
 	
 	public void setSession(Session session);
+	
+	public void setEntityManager(EntityManager entityManager);
 }

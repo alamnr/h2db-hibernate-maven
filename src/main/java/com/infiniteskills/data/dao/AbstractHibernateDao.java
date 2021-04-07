@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -18,13 +19,13 @@ import org.hibernate.criterion.Criterion;
 import com.infiniteskills.data.HibernateUtil;
 import com.infiniteskills.data.dao.interfaces.Dao;
 
-public class AbstractDao<T,ID extends Serializable> implements Dao<T,ID> {
+public class AbstractHibernateDao<T,ID extends Serializable> implements Dao<T,ID> {
 
 	private Class<T> persistentClass;
 	private Session session;
 	
 	@SuppressWarnings("unchecked")
-	public AbstractDao(){
+	public AbstractHibernateDao(){
 		this.persistentClass = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 	
@@ -92,6 +93,12 @@ public class AbstractDao<T,ID extends Serializable> implements Dao<T,ID> {
 	@Override
 	public void clear() {
 		this.getSession().clear();
+	}
+
+	@Override
+	public void setEntityManager(EntityManager entityManager) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

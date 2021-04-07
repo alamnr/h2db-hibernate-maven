@@ -1,10 +1,12 @@
 package com.guddy.h2.jpa;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +20,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.infiniteskills.data.HibernateUtil;
+import com.infiniteskills.data.JpaUtil;
+import com.infiniteskills.data.dao.UserHibernateDao;
+import com.infiniteskills.data.dao.UserJpaDao;
+import com.infiniteskills.data.dao.interfaces.UserDao;
 import com.infiniteskills.data.entities.Account;
 import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
@@ -28,7 +35,9 @@ import com.infiniteskills.data.entities.Market;
 import com.infiniteskills.data.entities.Portfolio;
 import com.infiniteskills.data.entities.Stock;
 import com.infiniteskills.data.entities.Transaction;
+import com.infiniteskills.data.entities.User;
 import com.infiniteskills.data.entities.Ids.CurrencyId;
+import com.infiniteskills.data.view.UserCredentialView;
 
 public class JpaTest {
 	
@@ -244,6 +253,73 @@ public class JpaTest {
 		 
 		 
 	 }
+	 
+	 @Test
+	 public void testView() {
+		 EntityManager entityManager = emf.createEntityManager();
+		 
+		 try {
+			entityManager.getTransaction().begin();
+			 UserCredentialView view = entityManager.find(UserCredentialView.class, 1L);
+				/*
+				 * System.out.println(view.getFirstName());
+				 * System.out.println(view.getLastName());
+				 */
+			 assertNull(view);
+			 
+			 entityManager.getTransaction().commit();
+		} catch (Exception e) {
+			entityManager.getTransaction().rollback();
+			throw e;
+		} finally {
+			entityManager.close();
+		}
+		 
+	 }
+	 
+	    @Test
+		 public void testPersistenceLayerDAO() {
+			 EntityManager entityManager= JpaUtil.getEntityManager();
+			 UserDao userDao = new UserJpaDao();
+			 userDao.setEntityManager(entityManager);
+			 
+			 try {
+				 entityManager.getTransaction().begin();;
+				 User user = createUser("Chudna", "Hugur", "chudna@hugur.com");
+				 userDao.save(user);
+				 entityManager.getTransaction().commit();
+			} catch (Exception e) {
+				entityManager.getTransaction().rollback();
+				throw e;
+			} finally {
+				entityManager.close();
+			}
+			 
+		 }
+	    
+	    private User createUser(String fname,String lname,String email ) {
+	    	User user = new User();
+	    	user.setFirstName(fname);
+	    	user.setLastName(lname);
+	    	user.setBirthDate(getMyBirthDay());
+	    	user.setEmailAddress(email);
+	    	user.setCreatedDate(new Date());
+	    	user.setCreatedBy("gagan");
+	    	user.setLastUpdatedDate(new Date());
+	    	user.setLastUpdatedBy("jumal");
+	    	user.setValid(true);
+	    	user.setAge(35);
+	    	
+	    	return user;
+	    }
+		
+	    private Date getMyBirthDay() {
+			Calendar calendar = Calendar.getInstance();
+			calendar.set(Calendar.YEAR, 1982);
+			calendar.set(Calendar.MONTH, 11);
+			calendar.set(Calendar.DATE, 1);
+			return calendar.getTime();
+		}
 	 
 	 private Transaction createNewBeltPurchase(Account account) {
 			
