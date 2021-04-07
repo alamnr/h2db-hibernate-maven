@@ -14,9 +14,7 @@ import lombok.Data;
 @Entity
 public class Bond extends Investment {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long bondId;
+	
 	
 	private BigDecimal value;
 	

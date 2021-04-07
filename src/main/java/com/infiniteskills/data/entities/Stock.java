@@ -12,11 +12,8 @@ import lombok.Data;
 
 @Data
 @Entity
-public class Stock extends Investment {
+public class Stock extends Investment {	
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long stockId;
 	
 	private BigDecimal sharePrice;
 	

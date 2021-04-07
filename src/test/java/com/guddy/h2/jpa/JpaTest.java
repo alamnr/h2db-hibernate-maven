@@ -23,7 +23,9 @@ import com.infiniteskills.data.entities.Address;
 import com.infiniteskills.data.entities.Bank;
 import com.infiniteskills.data.entities.Bond;
 import com.infiniteskills.data.entities.Currency;
+import com.infiniteskills.data.entities.Investment;
 import com.infiniteskills.data.entities.Market;
+import com.infiniteskills.data.entities.Portfolio;
 import com.infiniteskills.data.entities.Stock;
 import com.infiniteskills.data.entities.Transaction;
 import com.infiniteskills.data.entities.Ids.CurrencyId;
@@ -154,6 +156,93 @@ public class JpaTest {
 		} finally {
 			em.close();
 		}
+		 
+	 }
+	 
+	 
+	 
+	 @Test
+	 public void testTablePerClassInheritanceRelationShip() throws ParseException {
+		 
+		 EntityManager em = emf.createEntityManager();
+		 
+		 try {
+			em.getTransaction().begin();
+			 
+			 Portfolio portfolio = new Portfolio();
+			 portfolio.setName("First portfolio");
+			 
+			 Bond bond = createBond();
+			 bond.setPortfolio(portfolio);
+			 
+			 Stock stock = createStock();
+			 stock.setPortfolio(portfolio);
+			 
+			 portfolio.getInvestments().add(stock);
+			 portfolio.getInvestments().add(bond);
+			 
+			 em.persist(stock);
+			 em.persist(bond);
+			 
+			 em.getTransaction().commit();
+			 
+			 Portfolio dbPortfolio = em.find(Portfolio.class,  portfolio.getPortfolioId());
+			 em.refresh(dbPortfolio);
+			 
+			 for (Investment investment : dbPortfolio.getInvestments()) {
+				System.out.println(investment.getName());
+			}
+			 
+		} catch (ParseException e) {
+			em.getTransaction().rollback();
+			throw e;
+		} finally {
+			em.close();
+		}
+		 
+		 
+	 }
+	 
+	 @Test
+	 public void testSingleTableInheritanceRelationShip() throws ParseException {
+		 
+		 EntityManager em = emf.createEntityManager();
+		 
+		 try {
+			 
+			 em.getTransaction().begin();
+			 
+			 Portfolio portfolio = new Portfolio();
+			 portfolio.setName("First portfolio");
+			 
+			 Bond bond = createBond();
+			 bond.setPortfolio(portfolio);
+			 
+			 Stock stock = createStock();
+			 stock.setPortfolio(portfolio);
+			 
+			 portfolio.getInvestments().add(stock);
+			 portfolio.getInvestments().add(bond);
+			 
+			 em.persist(stock);
+			 em.persist(bond);
+			 
+			 em.getTransaction().commit();
+			 
+			 Portfolio dbPortfolio = em.find(Portfolio.class,  portfolio.getPortfolioId());
+			 em.refresh(dbPortfolio);
+			 
+			 for (Investment investment : dbPortfolio.getInvestments()) {
+				System.out.println(investment.getName());
+			}
+			 
+		} catch (ParseException e) {
+			em.getTransaction().rollback();
+			throw e;
+		} finally {
+			em.close();
+		}
+		 
 		 
 	 }
 	 
