@@ -9,11 +9,14 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
 import org.junit.AfterClass;
@@ -296,6 +299,31 @@ public class JpaTest {
 			}
 			 
 		 }
+	    
+	    @Test
+		public void testJpql() {
+	    	
+	    	EntityManager entityManager = emf.createEntityManager();
+	    	
+	    	try {
+				entityManager.getTransaction().begin();
+				
+				//Query query = entityManager.createQuery("from Bank b order by b.name");
+				TypedQuery<Bank> query = entityManager.createQuery("from Bank b order by b.name", Bank.class);
+				List<Bank> banks = query.getResultList();
+				for (Bank bank : banks) {
+					System.out.println(bank.getName());
+				}
+				
+				entityManager.getTransaction().commit();
+			} catch (Exception e) {
+				entityManager.getTransaction().rollback();
+				throw e;
+			} finally {
+				entityManager.close();
+			}
+			
+		}
 	    
 	    private User createUser(String fname,String lname,String email ) {
 	    	User user = new User();

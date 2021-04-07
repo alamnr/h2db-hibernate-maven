@@ -23,6 +23,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -465,6 +466,28 @@ public class AppTest
 		} finally {
 			session.close();
 		}
+	}
+	
+	@Test
+	public void testHql() {
+		
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		
+		try {
+			session.beginTransaction();
+			Query query = session.createQuery("select b  from Bank b");
+			List<Bank> banks = query.list();
+			for (Bank bank : banks) {
+				System.out.println(bank.getName());
+			}
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
+		
 	}
 	
 	private Transaction createNewBeltPurchase(Account account) {

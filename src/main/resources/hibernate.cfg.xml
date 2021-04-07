@@ -29,6 +29,7 @@
       <!-- <property name="format_sql">true</property> -->
       
       <property name="hbm2ddl.auto">create</property>
+       <!-- <property name="hbm2ddl.auto">create/validate/update/create-drop</property> -->
       
 
       <mapping class ="com.infiniteskills.data.entities.User"/>
