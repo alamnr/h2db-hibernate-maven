@@ -353,10 +353,10 @@ public class JpaTest {
 				entityManager.getTransaction().begin();
 				
 				//Query query = entityManager.createQuery("from Bank b order by b.name");
-				TypedQuery<Bank> query = entityManager.createQuery(" from Bank b order by b.name", Bank.class);
-				List<Bank> banks = query.getResultList();
-				for (Bank bank : banks) {
-					System.out.println(bank.getName());
+				TypedQuery<Transaction> query = entityManager.createQuery(" from Transaction t order by t.title", Transaction.class);
+				List<Transaction> transactions = query.getResultList();
+				for (Transaction transaction : transactions) {
+					System.out.println(transaction.getTitle());
 				}
 				
 				entityManager.getTransaction().commit();
