@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import javax.transaction.SystemException;
 
@@ -790,14 +791,18 @@ public class AppTest
 	@Test
 	public void testExpressionAndOperators() {
 		Session session = sessionFactory.openSession();
+		Scanner scanner = new Scanner(System.in);
 		
 		try {
 			//session.beginTransaction();
-			Query query = session.createQuery("select t from Transaction t where t.amount >75 and t.transactionType='credit'");
+			Query query = session.createQuery("select t from Transaction t where t.amount > :amount and t.transactionType='credit'");
+			//System.out.println("Please specify an amount: ");
+			//query.setParameter("amount", new BigDecimal(scanner.next()));
+			query.setParameter("amount", new BigDecimal(65));
 			List<Transaction> transactions = query.list();
 			//session.getTransaction().commit();
 			System.out.println(transactions.size());
-			assertEquals(2, transactions.size());
+			assertNotNull(transactions);
 			for (Transaction transaction : transactions) {
 				System.out.println(transaction.getTitle());
 			}
