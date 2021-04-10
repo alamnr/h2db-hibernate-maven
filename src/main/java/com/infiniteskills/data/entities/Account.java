@@ -18,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +34,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @EqualsAndHashCode
 @Entity
+@NamedQueries({@NamedQuery(name = "Account.largeDeposits", query = "select distinct t.account from Transaction t "
+		+ "where t.amount > :amount and upper(t.transactionType)='CREDIT'"),
+		@NamedQuery(name = "Account.largestWithdrawl", query = "select distinct t.account.accountName,  "
+						+ " concat(t.account.bank.name, ' test ') " 
+						+ " from Transaction t "						
+						+ " where t.amount > :amount and t.transactionType = 'Withdrawl' ")
+})
 public class Account {
 	
 	@Id

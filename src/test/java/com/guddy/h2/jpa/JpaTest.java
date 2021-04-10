@@ -19,6 +19,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.hibernate.Session;
 import org.junit.AfterClass;
@@ -679,10 +682,16 @@ public class JpaTest {
 				/* TypedQuery<Account> query = entityManager.createQuery("select distinct a from Transaction t "
 						+ " join  t.account a "
 						+ " where t.amount > 5 and t.transactionType = 'credit' ", Account.class); */
-				Query query = entityManager.createQuery("select distinct t.account.accountName,  "
-						+ " concat(t.account.bank.name, ' test ') " 
-						+ " from Transaction t "						
-						+ " where t.amount > 5 and t.transactionType = 'Withdrawl' ");
+				/*
+				 * Query query =
+				 * entityManager.createQuery("select distinct t.account.accountName,  " +
+				 * " concat(t.account.bank.name, ' test ') " + " from Transaction t " +
+				 * " where t.amount > 5 and t.transactionType = 'Withdrawl' ");
+				 */
+				
+				Query query = entityManager.createNamedQuery("Account.largestWithdrawl");
+				
+				query.setParameter("amount", new BigDecimal(99));
 				//System.out.println("Please provide the first amount: ");
 				
 				//query.setParameter(1, new BigDecimal(scanner.next()));
@@ -716,6 +725,30 @@ public class JpaTest {
 			} finally {
 				entityManager.close();
 			}
+		}
+		
+		@Test
+		public void testCriteria() {
+			
+			EntityManager entityManager = emf.createEntityManager();
+			
+			try {
+				CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+				CriteriaQuery<Transaction> criteriaQuery = criteriaBuilder.createQuery(Transaction.class);
+				Root<Transaction> root = criteriaQuery.from(Transaction.class);
+				criteriaQuery.select(root);
+				TypedQuery<Transaction> query = entityManager.createQuery(criteriaQuery); 
+				List<Transaction> transactions = query.getResultList();
+				
+				for (Transaction transaction : transactions) {
+					System.out.println(transaction.getTitle());
+				}
+			} catch (Exception e) {
+				throw e;			
+			} finally {
+				entityManager.close();
+			}
+			
 		}
 		
 		
