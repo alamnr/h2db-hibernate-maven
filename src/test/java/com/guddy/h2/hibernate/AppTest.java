@@ -25,7 +25,9 @@ import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Restrictions;
 import org.hibernate.query.Query;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -828,12 +830,15 @@ public class AppTest {
 		Session session = sessionFactory.openSession();
 
 		try {
-			List<Transaction> transactions = session.createCriteria(Transaction.class).addOrder(Order.desc("title"))
-					.list();
+			Criterion criterion1 = Restrictions.le("amount", new BigDecimal(100));
+			Criterion criterion2 = Restrictions.eq("transactionType", "Withdrawl");
+			List<Transaction> transactions = session.createCriteria(Transaction.class)
+					.add(Restrictions.and(criterion1, criterion2)).addOrder(Order.desc("title")).list();
 			for (Transaction transaction : transactions) {
 				System.out.println(transaction.getTitle());
 			}
-			assertEquals(12, transactions.size());
+			// assertEquals(12, transactions.size());
+			assertEquals(2, transactions.size());
 		} catch (HibernateException e) {
 			throw e;
 		} finally {
