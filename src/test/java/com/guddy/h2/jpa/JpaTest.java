@@ -558,7 +558,7 @@ public class JpaTest {
 			transaction.setLastUpdatedBy("chodna");
 			transaction.setLastUpdatedDate(new Date());
 			transaction.setNotes("shirt");
-			transaction.setTransactionType("credit");
+			transaction.setTransactionType("Withdrawl");
 			
 			return transaction;	
 		}
@@ -575,7 +575,7 @@ public class JpaTest {
 			transaction.setLastUpdatedBy("chodna");
 			transaction.setLastUpdatedDate(new Date());
 			transaction.setNotes("shocks");
-			transaction.setTransactionType("credit");
+			transaction.setTransactionType("Withdrawl");
 			
 			return transaction;	
 		}
@@ -659,5 +659,30 @@ public class JpaTest {
 			return bond;
 		}
 
-
+		@Test
+		public void testExpressionAndOperators() {
+			
+			EntityManager entityManager = emf.createEntityManager();
+			
+			try {
+				//Query query = entityManager.createQuery("from Transaction t where t.amount < 100 and t.transactionType='Withdrawl'");
+				TypedQuery<Transaction> query = entityManager.createQuery("from Transaction t "
+																					+ " where (t.amount between 15 and 100) "
+																					+ " and t.title like '%s' "
+																					+ " order by t.title", Transaction.class);
+				List<Transaction>  transactions = query.getResultList();
+				System.out.println(transactions.size());
+				//assertEquals(2, transactions.size());
+				assertEquals(4, transactions.size());
+				for (Transaction transaction : transactions) {
+					System.out.println(transaction.getTitle());
+				}
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				entityManager.close();
+			}
+		}
+		
+		
 }

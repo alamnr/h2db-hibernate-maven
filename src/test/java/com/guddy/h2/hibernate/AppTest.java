@@ -621,7 +621,7 @@ public class AppTest
 			transaction.setLastUpdatedBy("chodna");
 			transaction.setLastUpdatedDate(new Date());
 			transaction.setNotes("pants");
-			transaction.setTransactionType("credit");
+			transaction.setTransactionType("Withdrawl");
 			
 			return transaction;	
 		}
@@ -638,7 +638,7 @@ public class AppTest
 			transaction.setLastUpdatedBy("chodna");
 			transaction.setLastUpdatedDate(new Date());
 			transaction.setNotes("pay check");
-			transaction.setTransactionType("credit");
+			transaction.setTransactionType("Withdrawl");
 			
 			return transaction;	
 		}
@@ -655,7 +655,7 @@ public class AppTest
 			transaction.setLastUpdatedBy("chodna");
 			transaction.setLastUpdatedDate(new Date());
 			transaction.setNotes("shirt");
-			transaction.setTransactionType("credit");
+			transaction.setTransactionType("Withdrawl");
 			
 			return transaction;	
 		}
@@ -785,6 +785,27 @@ public class AppTest
 	@AfterClass
 	public static void tearDownAll() {
 		sessionFactory.close();
+	}
+	
+	@Test
+	public void testExpressionAndOperators() {
+		Session session = sessionFactory.openSession();
+		
+		try {
+			//session.beginTransaction();
+			Query query = session.createQuery("select t from Transaction t where t.amount >75 and t.transactionType='credit'");
+			List<Transaction> transactions = query.list();
+			//session.getTransaction().commit();
+			System.out.println(transactions.size());
+			assertEquals(2, transactions.size());
+			for (Transaction transaction : transactions) {
+				System.out.println(transaction.getTitle());
+			}
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			session.close();
+		}
 	}
 }
 
