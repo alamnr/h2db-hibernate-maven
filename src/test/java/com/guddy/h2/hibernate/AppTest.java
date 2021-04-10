@@ -795,16 +795,25 @@ public class AppTest
 		
 		try {
 			//session.beginTransaction();
-			Query query = session.createQuery("select t from Transaction t where t.amount > :amount and t.transactionType='credit'");
+			//Query query = session.createQuery("select t from Transaction t where t.amount > :amount and t.transactionType='credit'");
+			Query query = session.createQuery("select distinct t.account from Transaction t "
+												+ "where t.amount > :amount and t.transactionType='credit'");
 			//System.out.println("Please specify an amount: ");
 			//query.setParameter("amount", new BigDecimal(scanner.next()));
 			query.setParameter("amount", new BigDecimal(65));
-			List<Transaction> transactions = query.list();
+			//List<Transaction> transactions = query.list();
+			List<Account> accounts = query.list();
 			//session.getTransaction().commit();
-			System.out.println(transactions.size());
-			assertNotNull(transactions);
-			for (Transaction transaction : transactions) {
-				System.out.println(transaction.getTitle());
+			//System.out.println(transactions.size());
+			System.out.println(accounts.size());
+			//assertNotNull(transactions);
+			assertNotNull(accounts);
+			/*
+			 * for (Transaction transaction : transactions) {
+			 * System.out.println(transaction.getTitle()); }
+			 */
+			for (Account account : accounts) {
+				System.out.println(account.getAccountType());
 			}
 		} catch (Exception e) {
 			throw e;

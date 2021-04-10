@@ -669,25 +669,38 @@ public class JpaTest {
 			
 			try {
 				//Query query = entityManager.createQuery("from Transaction t where t.amount < 100 and t.transactionType='Withdrawl'");
-				TypedQuery<Transaction> query = entityManager.createQuery("from Transaction t "
-																					+ " where (t.amount between ?1 and ?2) "
-																					+ " and t.title like '%s' "
-																					+ " order by t.title", Transaction.class);
+				/*
+				 * TypedQuery<Transaction> query =
+				 * entityManager.createQuery("from Transaction t " +
+				 * " where (t.amount between ?1 and ?2) " + " and t.title like '%s' " +
+				 * " order by t.title", Transaction.class);
+				 */
+				
+				TypedQuery<Account> query = entityManager.createQuery("select distinct a from Transaction t "
+						+ " join  t.account a "
+						+ " where t.amount > 5 and t.transactionType = 'credit' ", Account.class);
 				//System.out.println("Please provide the first amount: ");
 				
 				//query.setParameter(1, new BigDecimal(scanner.next()));
-				query.setParameter(1, new BigDecimal(10));
+				//query.setParameter(1, new BigDecimal(10));
 				//System.out.println("Please provide the first amount: ");
 				//query.setParameter(2, new BigDecimal(scanner.next()));
-				query.setParameter(2, new BigDecimal(90));
+				//query.setParameter(2, new BigDecimal(90));
 				
-				List<Transaction>  transactions = query.getResultList();
-				System.out.println(transactions.size());
+				//List<Transaction>  transactions = query.getResultList();
+				List<Account>  accounts = query.getResultList();
+				//System.out.println(transactions.size());
+				System.out.println(accounts.size());
 				//assertEquals(2, transactions.size());
 				//assertEquals(4, transactions.size());
-				assertNotNull(transactions);
-				for (Transaction transaction : transactions) {
-					System.out.println(transaction.getTitle());
+				//assertNotNull(transactions);
+				assertNotNull(accounts);
+				/*
+				 * for (Transaction transaction : transactions) {
+				 * System.out.println(transaction.getTitle()); }
+				 */
+				for (Account account : accounts) {
+					System.out.println(account.getAccountName());
 				}
 			} catch (Exception e) {
 				throw e;
