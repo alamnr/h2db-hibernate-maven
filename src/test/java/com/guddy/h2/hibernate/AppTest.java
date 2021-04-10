@@ -828,17 +828,30 @@ public class AppTest {
 	public void testCriteria() {
 
 		Session session = sessionFactory.openSession();
+		
+		int pageNumber = 2;
+		int pageSize = 4;
 
 		try {
 			Criterion criterion1 = Restrictions.le("amount", new BigDecimal(100));
 			Criterion criterion2 = Restrictions.eq("transactionType", "Withdrawl");
-			List<Transaction> transactions = session.createCriteria(Transaction.class)
-					.add(Restrictions.and(criterion1, criterion2)).addOrder(Order.desc("title")).list();
+			/*
+			 * List<Transaction> transactions = session.createCriteria(Transaction.class)
+			 * .add(Restrictions.and(criterion1,
+			 * criterion2)).addOrder(Order.desc("title")).list();
+			 */
+			Criteria criteria = session.createCriteria(Transaction.class);
+			criteria.setFirstResult((pageNumber-1)*pageSize);
+			criteria.setMaxResults(pageSize);
+			List<Transaction> transactions = criteria.addOrder(Order.desc("title"))
+					.list();
+			
 			for (Transaction transaction : transactions) {
 				System.out.println(transaction.getTitle());
 			}
 			// assertEquals(12, transactions.size());
-			assertEquals(2, transactions.size());
+			//assertEquals(2, transactions.size());
+			assertEquals(4, transactions.size());
 		} catch (HibernateException e) {
 			throw e;
 		} finally {

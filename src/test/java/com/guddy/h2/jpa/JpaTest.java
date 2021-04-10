@@ -742,24 +742,35 @@ public class JpaTest {
 	public void testCriteria() {
 
 		EntityManager entityManager = emf.createEntityManager();
+		
+		int pageNumber = 1;
+		int pageSize = 5;
 
 		try {
 			CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Transaction> criteriaQuery = criteriaBuilder.createQuery(Transaction.class);
 			Root<Transaction> root = criteriaQuery.from(Transaction.class);
-			Path<BigDecimal> amountPath = root.get("amount");
-			Path<String> transactionTypePath = root.get("transactionType");
+			//Path<BigDecimal> amountPath = root.get("amount");
+			//Path<String> transactionTypePath = root.get("transactionType");
 
-			criteriaQuery.select(root).where(criteriaBuilder.and(criteriaBuilder.le(amountPath, new BigDecimal(100)),
-					criteriaBuilder.equal(transactionTypePath, "Withdrawl")));
+			/*
+			 * criteriaQuery.select(root).where(criteriaBuilder.and(criteriaBuilder.le(
+			 * amountPath, new BigDecimal(100)), criteriaBuilder.equal(transactionTypePath,
+			 * "Withdrawl")));
+			 */
+			criteriaQuery.select(root);
 			TypedQuery<Transaction> query = entityManager.createQuery(criteriaQuery);
+			query.setFirstResult((pageNumber-1)*pageSize);
+			query.setMaxResults(pageSize);
+			
 			List<Transaction> transactions = query.getResultList();
 
 			for (Transaction transaction : transactions) {
 				System.out.println(transaction.getTitle());
 			}
 			// assertEquals(12, transactions.size());
-			assertEquals(2, transactions.size());
+			//assertEquals(2, transactions.size());
+			assertEquals(5, transactions.size());
 		} catch (Exception e) {
 			throw e;
 		} finally {
