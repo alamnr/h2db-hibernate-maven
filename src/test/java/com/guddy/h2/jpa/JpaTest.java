@@ -676,9 +676,13 @@ public class JpaTest {
 				 * " order by t.title", Transaction.class);
 				 */
 				
-				TypedQuery<Account> query = entityManager.createQuery("select distinct a from Transaction t "
+				/* TypedQuery<Account> query = entityManager.createQuery("select distinct a from Transaction t "
 						+ " join  t.account a "
-						+ " where t.amount > 5 and t.transactionType = 'credit' ", Account.class);
+						+ " where t.amount > 5 and t.transactionType = 'credit' ", Account.class); */
+				Query query = entityManager.createQuery("select distinct t.account.accountName,  "
+						+ " concat(t.account.bank.name, ' test ') " 
+						+ " from Transaction t "						
+						+ " where t.amount > 5 and t.transactionType = 'Withdrawl' ");
 				//System.out.println("Please provide the first amount: ");
 				
 				//query.setParameter(1, new BigDecimal(scanner.next()));
@@ -688,7 +692,8 @@ public class JpaTest {
 				//query.setParameter(2, new BigDecimal(90));
 				
 				//List<Transaction>  transactions = query.getResultList();
-				List<Account>  accounts = query.getResultList();
+				//List<Account>  accounts = query.getResultList();
+				List<Object[]>  accounts = query.getResultList();
 				//System.out.println(transactions.size());
 				System.out.println(accounts.size());
 				//assertEquals(2, transactions.size());
@@ -699,8 +704,12 @@ public class JpaTest {
 				 * for (Transaction transaction : transactions) {
 				 * System.out.println(transaction.getTitle()); }
 				 */
-				for (Account account : accounts) {
+				/*for (Account account : accounts) {
 					System.out.println(account.getAccountName());
+				}*/
+				for (Object[] objects : accounts) {
+					System.out.println(objects[0]);
+					System.out.println(objects[1]);
 				}
 			} catch (Exception e) {
 				throw e;

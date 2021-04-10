@@ -797,7 +797,7 @@ public class AppTest
 			//session.beginTransaction();
 			//Query query = session.createQuery("select t from Transaction t where t.amount > :amount and t.transactionType='credit'");
 			Query query = session.createQuery("select distinct t.account from Transaction t "
-												+ "where t.amount > :amount and t.transactionType='credit'");
+												+ "where t.amount > :amount and upper(t.transactionType)='CREDIT'");
 			//System.out.println("Please specify an amount: ");
 			//query.setParameter("amount", new BigDecimal(scanner.next()));
 			query.setParameter("amount", new BigDecimal(65));
